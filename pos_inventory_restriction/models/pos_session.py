@@ -13,11 +13,6 @@ class PosSession(models.Model):
 
         # LEVEL 1 — no picking at all
         if level == "deny_picking_creation":
-            _logger.info(
-                "Inventory restriction: deny_picking_creation - "
-                "skipping picking creation for session %s",
-                self.name
-            )
             return True
 
         # Build context flags based on level
@@ -36,17 +31,11 @@ class PosSession(models.Model):
                 "disable_inventory_accounting": True,
             })
 
-        _logger.warning(
-            "Calling super() with context: %s",
-            ctx
-        )
-
         res = super(
             PosSession,
             self.with_context(**ctx)
         )._create_picking_at_end_of_session()
 
-        _logger.warning("=" * 80)
         return res
 
     def _pos_ui_models_to_load(self):
